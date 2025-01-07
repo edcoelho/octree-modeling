@@ -1,5 +1,5 @@
-#ifndef UTILS_HPP_
-#define UTILS_HPP_
+#ifndef OCTREE_MODELING_RENDER_UTILS_HPP_
+#define OCTREE_MODELING_RENDER_UTILS_HPP_
 
 #include <GL/glew.h>
 #include <string>
