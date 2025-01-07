@@ -2,7 +2,7 @@
 #define OCTREE_MODELING_MODEL_OCTREE_HPP_
 
 #include "model/OctreeNode.hpp"
-#include "model/Sphere.hpp"
+#include "model/Primitive.hpp"
 #include <string>
 #include <memory>
 #include <glm/vec3.hpp>
@@ -15,21 +15,28 @@ namespace octree_modeling {
             private:
 
                 glm::vec3 center;
-                std::shared_ptr<OctreeNode> root;
+                float width;
                 std::size_t depth;
-                float radius;
+                std::shared_ptr<OctreeNode> root;
 
             public:
 
-                Octree (glm::vec3 _center = glm::vec3(0.0f), float _radius = 1.0f);
-                Octree (Sphere const& _sphere);
-                Octree (Sphere const& _sphere, glm::vec3 _center, float _radius);
+                Octree (glm::vec3 _center = glm::vec3(0.0f), float _width = 2.0f, std::size_t _depth = 6);
+                Octree (Primitive const& primitive, glm::vec3 _center, float _width, std::size_t _depth = 6);
+
+                glm::vec3 get_center () const;
+                void set_center (glm::vec3 _center);
+
+                std::size_t get_depth () const;
+
+                float get_width () const;
+                void set_width (float _width);
 
                 // Returns a string representation of the octree.
                 std::string string_octree () const;
 
                 // If the octree is empty, build the octree from a primitive.
-                void build_from_primitive (Sphere const& sphere);
+                void build_from_primitive (Primitive const& primitive);
 
         };
 

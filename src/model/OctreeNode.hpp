@@ -3,8 +3,9 @@
 
 #include <memory>
 #include <array>
+#include <string>
 #include <glm/vec3.hpp> 
-#include "model/Sphere.hpp"
+#include "model/Primitive.hpp"
 #include "model/utils.hpp"
 
 namespace octree_modeling {
@@ -15,18 +16,17 @@ namespace octree_modeling {
             private:
 
                 OctreeNodeColor color;
-                glm::vec3 max, min;
                 std::array<std::shared_ptr<OctreeNode>, 8> octants;
 
             public:
-
-                OctreeNode (glm::vec3 center = glm::vec3(0.0f), float radius = 1.0f);
 
                 OctreeNodeColor get_color () const;
                 void set_color (OctreeNodeColor _color);
 
                 void subdivide ();
-                void make_tree (Sphere const& sphere, std::size_t depth);
+                void unify ();
+                void make_subtree (Primitive const& primitive, std::size_t const& depth, float const& width, glm::vec3 const& center);
+                void append_df_representation (std::string& df_string) const;
 
         };
 

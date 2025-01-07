@@ -1,13 +1,12 @@
 #ifndef OCTREE_MODELING_MODEL_SPHERE_HPP_
 #define OCTREE_MODELING_MODEL_SPHERE_HPP_
 
-#include <glm/vec3.hpp>
-#include "model/utils.hpp"
+#include "model/Primitive.hpp"
 
 namespace octree_modeling {
     namespace model {
 
-        class Sphere {
+        class Sphere : public Primitive {
 
             private:
 
@@ -24,7 +23,7 @@ namespace octree_modeling {
                 float get_radius () const;
                 void set_radius (float _radius);
 
-                OctreeNodeColor classify (glm::vec3 max, glm::vec3 min) const;
+                OctreeNodeColor classify (glm::vec3 max, glm::vec3 min) const override;
 
         };
 

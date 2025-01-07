@@ -1,5 +1,6 @@
 #include "model/Sphere.hpp"
 #include <glm/glm.hpp>
+#include <algorithm>
 
 namespace octree_modeling {
     namespace model {
@@ -30,46 +31,36 @@ namespace octree_modeling {
 
         OctreeNodeColor Sphere::classify (glm::vec3 max, glm::vec3 min) const {
 
-            if (
-                (((this->center.x - this->radius)) < max.x) && (((this->center.x + this->radius)) > min.x)
-                &&
-                (((this->center.y - this->radius)) < max.y) && (((this->center.y + this->radius)) > min.y)
-                &&
-                (((this->center.z - this->radius)) < max.z) && (((this->center.z + this->radius)) > min.z)
-            ) {
+            glm::vec3 closest_to_the_center;
+            for (std::size_t i = 0; i < 3; i++) {
 
-                float cube_width = max.x - min.x;
+                closest_to_the_center[i] = std::max(min[i], std::min(this->center[i], max[i]));
+    
+            }
 
-                if (
-                    (glm::distance(this->center, min) <= this->radius)
-                    &&
-                    (glm::distance(this->center, (min + glm::vec3(cube_width, 0.0f, 0.0f))) <= this->radius)
-                    &&
-                    (glm::distance(this->center, (min + glm::vec3(0.0f, cube_width, 0.0f))) <= this->radius)
-                    &&
-                    (glm::distance(this->center, (min + glm::vec3(cube_width, cube_width, 0.0f))) <= this->radius)
-
-                    &&
-                    (glm::distance(this->center, (min + glm::vec3(0.0f, 0.0f, cube_width))) <= this->radius)
-                    &&
-                    (glm::distance(this->center, (min + glm::vec3(cube_width, 0.0f, cube_width))) <= this->radius)
-                    &&
-                    (glm::distance(this->center, (min + glm::vec3(0.0f, cube_width, cube_width))) <= this->radius)
-                    &&
-                    (glm::distance(this->center, max) <= this->radius)
-                ) {
-
-                    return BLACK;
-
-                } else {
-
-                    return GRAY;
-
-                }
-
-            } else {
+            if (glm::distance(this->center, closest_to_the_center) > this->radius) {
 
                 return WHITE;
+
+            } else if (
+
+                (glm::distance(this->center, glm::vec3(min.x, min.y, min.z)) <= this->radius) &&
+                (glm::distance(this->center, glm::vec3(max.x, min.y, min.z)) <= this->radius) &&
+                (glm::distance(this->center, glm::vec3(min.x, max.y, min.z)) <= this->radius) &&
+                (glm::distance(this->center, glm::vec3(max.x, max.y, min.z)) <= this->radius) &&
+
+                (glm::distance(this->center, glm::vec3(min.x, min.y, max.z)) <= this->radius) &&
+                (glm::distance(this->center, glm::vec3(max.x, min.y, max.z)) <= this->radius) &&
+                (glm::distance(this->center, glm::vec3(min.x, max.y, max.z)) <= this->radius) &&
+                (glm::distance(this->center, glm::vec3(max.x, max.y, max.z)) <= this->radius)
+
+            ) {
+
+                return BLACK;
+
+            } else {
+                
+                return GRAY;
 
             }
 
