@@ -95,6 +95,9 @@ int main(int argc, char * argv[]) {
         -3.0f, 2.5f, z_v,
         4.5f, 0.5f, z_v,
         -10.0f, -4.0f, z_v,
+        4.7f, -3.0, z_v,
+        4.0f, -4.5, z_v,
+        4.9f, -4.0f, z_v
     };
 
     GLuint vbo_pos;
@@ -116,7 +119,7 @@ void render::display () {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glutSwapBuffers();
 

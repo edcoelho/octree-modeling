@@ -21,7 +21,7 @@ namespace octree_modeling {
 
             public:
 
-                Octree (glm::vec3 _center = glm::vec3(0.0f), float _width = 2.0f, std::size_t _depth = 6);
+                Octree (glm::vec3 _center = glm::vec3(0.0f), float _width = 1.0f, std::size_t _depth = 6);
                 Octree (Primitive const& primitive, glm::vec3 _center, float _width, std::size_t _depth = 6);
 
                 glm::vec3 get_center () const;
