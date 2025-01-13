@@ -172,6 +172,8 @@ int main(int argc, char * argv[]) {
     indexes_vertices_pos.clear();
     indexes_vertices_pos.shrink_to_fit();
 
+    std::cout << "Volume da octree: " << octree.volume() << std::endl;
+
     glutMainLoop();
 
     return EXIT_SUCCESS;

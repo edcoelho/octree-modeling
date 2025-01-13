@@ -29,6 +29,7 @@ namespace octree_modeling {
                 void make_subtree (Primitive const& primitive, std::size_t const& depth, float const& width, glm::vec3 const& center);
                 void append_df_representation (std::string& df_string) const;
                 void append_vertices (std::vector<float>& vertices, float const& width, glm::vec3 const& center) const;
+                float compute_volume (float const& width) const;
 
         };
 

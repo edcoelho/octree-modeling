@@ -42,6 +42,9 @@ namespace octree_modeling {
                 // Compute vertices of the octree leaves for rendering.
                 std::vector<float> leaves_vertices () const;
 
+                // Returns the volume of the octree.
+                float volume () const;
+
         };
 
     }

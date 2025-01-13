@@ -132,5 +132,11 @@ namespace octree_modeling {
 
         }
 
+        float Octree::volume () const {
+
+            return this->root->compute_volume(this->width);
+
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 #include "model/OctreeNode.hpp"
+#include <cmath>
 // #include <iostream>
 // #define GLM_ENABLE_EXPERIMENTAL
 // #include <glm/gtx/string_cast.hpp>
@@ -193,6 +194,28 @@ namespace octree_modeling {
                 this->octants[5]->append_vertices(vertices, width/2.0f, center + glm::vec3(width/4.0f, -width/4.0f, -width/4.0f));
                 this->octants[6]->append_vertices(vertices, width/2.0f, center + glm::vec3(-width/4.0f, width/4.0f, -width/4.0f));
                 this->octants[7]->append_vertices(vertices, width/2.0f, center + glm::vec3(width/4.0f, width/4.0f, -width/4.0f));
+
+            }
+
+        }
+
+        float OctreeNode::compute_volume (float const& width) const {
+
+            if (this->color == WHITE) {
+
+                return 0.0f;
+
+            } else if (this->color == BLACK) {
+
+                return std::pow(width, 3.0f);
+
+            } else {
+
+                float volume = 0.0f;
+
+                for (std::size_t i = 0; i < 8; i++) volume+=this->octants[i]->compute_volume(width/2.0f);
+
+                return volume;
 
             }
 
