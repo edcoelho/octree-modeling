@@ -5,6 +5,7 @@
 #include "model/Primitive.hpp"
 #include <string>
 #include <memory>
+#include <vector>
 #include <glm/vec3.hpp>
 
 namespace octree_modeling {
@@ -37,6 +38,9 @@ namespace octree_modeling {
 
                 // If the octree is empty, build the octree from a primitive.
                 void build_from_primitive (Primitive const& primitive);
+
+                // Compute vertices of the octree leaves for rendering.
+                std::vector<float> leaves_vertices () const;
 
         };
 

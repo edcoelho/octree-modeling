@@ -5,6 +5,7 @@
 #include <array>
 #include <string>
 #include <glm/vec3.hpp> 
+#include <vector>
 #include "model/Primitive.hpp"
 #include "model/utils.hpp"
 
@@ -27,6 +28,7 @@ namespace octree_modeling {
                 void unify ();
                 void make_subtree (Primitive const& primitive, std::size_t const& depth, float const& width, glm::vec3 const& center);
                 void append_df_representation (std::string& df_string) const;
+                void append_vertices (std::vector<float>& vertices, float const& width, glm::vec3 const& center) const;
 
         };
 

@@ -21,7 +21,7 @@ namespace octree_modeling {
 
         void OctreeNode::set_color (OctreeNodeColor _color) {
 
-            this->color = color;
+            this->color = _color;
 
         }
 
@@ -131,6 +131,68 @@ namespace octree_modeling {
                         this->octants[i]->append_df_representation(df_string); 
 
                     }
+
+            }
+
+        }
+
+        void OctreeNode::append_vertices (std::vector<float>& vertices, float const& width, glm::vec3 const& center) const {
+
+            if (this->color == BLACK) {
+
+                glm::vec3 vertex;
+
+                vertex = center + glm::vec3(-width/2.0f, -width/2.0f, width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = center + glm::vec3(width/2.0f, -width/2.0f, width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = center + glm::vec3(width/2.0f, width/2.0f, width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = center + glm::vec3(-width/2.0f, width/2.0f, width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = center + glm::vec3(width/2.0f, -width/2.0f, -width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = center + glm::vec3(-width/2.0f, -width/2.0f, -width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = center + glm::vec3(-width/2.0f, width/2.0f, -width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = center + glm::vec3(width/2.0f, width/2.0f, -width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+            } else if (this->color == GRAY) {
+
+                this->octants[0]->append_vertices(vertices, width/2.0f, center + glm::vec3(-width/4.0f, -width/4.0f, width/4.0f));
+                this->octants[1]->append_vertices(vertices, width/2.0f, center + glm::vec3(width/4.0f, -width/4.0f, width/4.0f));
+                this->octants[2]->append_vertices(vertices, width/2.0f, center + glm::vec3(-width/4.0f, width/4.0f, width/4.0f));
+                this->octants[3]->append_vertices(vertices, width/2.0f, center + glm::vec3(width/4.0f, width/4.0f, width/4.0f));
+
+                this->octants[4]->append_vertices(vertices, width/2.0f, center + glm::vec3(-width/4.0f, -width/4.0f, -width/4.0f));
+                this->octants[5]->append_vertices(vertices, width/2.0f, center + glm::vec3(width/4.0f, -width/4.0f, -width/4.0f));
+                this->octants[6]->append_vertices(vertices, width/2.0f, center + glm::vec3(-width/4.0f, width/4.0f, -width/4.0f));
+                this->octants[7]->append_vertices(vertices, width/2.0f, center + glm::vec3(width/4.0f, width/4.0f, -width/4.0f));
 
             }
 

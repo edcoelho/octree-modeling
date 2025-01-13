@@ -1,5 +1,6 @@
 #include "model/Octree.hpp"
 #include <stdexcept>
+#include <cmath>
 
 namespace octree_modeling {
     namespace model {
@@ -68,6 +69,66 @@ namespace octree_modeling {
                 throw std::runtime_error("Error: It is not possible to build an octree which is already builded.");
 
             }
+
+        }
+
+        std::vector<float> Octree::leaves_vertices () const {
+
+            std::vector<float> vertices;
+            if (this->root->get_color() != WHITE) {
+
+                vertices.reserve(8 + std::min(std::pow(8, this->depth), std::pow(10,6)));
+
+                // Adding octree root vertices.
+                glm::vec3 vertex;
+
+                vertex = this->center + glm::vec3(-this->width/2.0f, -this->width/2.0f, this->width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = this->center + glm::vec3(this->width/2.0f, -this->width/2.0f, this->width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = this->center + glm::vec3(this->width/2.0f, this->width/2.0f, this->width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = this->center + glm::vec3(-this->width/2.0f, this->width/2.0f, this->width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = this->center + glm::vec3(this->width/2.0f, -this->width/2.0f, -this->width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = this->center + glm::vec3(-this->width/2.0f, -this->width/2.0f, -this->width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = this->center + glm::vec3(-this->width/2.0f, this->width/2.0f, -this->width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                vertex = this->center + glm::vec3(this->width/2.0f, this->width/2.0f, -this->width/2.0f);
+                vertices.push_back(vertex.x);
+                vertices.push_back(vertex.y);
+                vertices.push_back(vertex.z);
+
+                // Adding octree leaves vertices.
+                this->root->append_vertices(vertices, this->width, this->center);
+                vertices.shrink_to_fit();
+
+            }
+
+            return vertices;
 
         }
 
