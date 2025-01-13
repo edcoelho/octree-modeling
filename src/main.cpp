@@ -102,8 +102,17 @@ int main(int argc, char * argv[]) {
 
     // Create a Vertex Buffer Object (VBO) for vertex position.
 
-    model::Octree octree(glm::vec3(0.0f), 4.4f, 4);
-    octree.build_from_primitive(model::Sphere(glm::vec3(0.0f), 2.2f));
+    // model::Octree octree(glm::vec3(0.0f), 4.4f, 4);
+    // octree.build_from_primitive(model::Sphere(glm::vec3(0.0f), 2.2f));
+    // vertices_pos = octree.leaves_vertices();
+    // std::size_t quantity_of_cubes = vertices_pos.size()/3/8;
+
+    model::Octree octree1(glm::vec3(0.0f), 4.4f, 4);
+    octree1.build_from_primitive(model::Sphere(glm::vec3(-2.5f, 0.0f, 0.0), 2.2f));
+    model::Octree octree2(glm::vec3(0.0f), 4.4f, 4);
+    octree2.build_from_primitive(model::Sphere(glm::vec3(2.5f, 0.0f, 0.0), 2.2f));
+
+    model::Octree octree = octree1.union_octree(octree2);
     vertices_pos = octree.leaves_vertices();
     std::size_t quantity_of_cubes = vertices_pos.size()/3/8;
 
@@ -213,6 +222,18 @@ void render::keyboard (unsigned char key, int x, int y) {
 
             camera.set_position(camera.get_position() + glm::vec3(0.1f, 0.0f, 0.0f));
             camera.set_look_at(camera.get_look_at() + glm::vec3(0.1f, 0.0f, 0.0f));
+            break;
+
+        case 106: // J
+
+            camera.set_position(camera.get_position() + glm::vec3(0.0f, 0.1f, 0.0f));
+            camera.set_look_at(camera.get_look_at() + glm::vec3(0.0f, 0.1f, 0.0f));
+            break;
+
+        case 107: // K
+
+            camera.set_position(camera.get_position() - glm::vec3(0.0f, 0.1f, 0.0f));
+            camera.set_look_at(camera.get_look_at() - glm::vec3(0.0f, 0.1f, 0.0f));
             break;
 
         case 115: // S

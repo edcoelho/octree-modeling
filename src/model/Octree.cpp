@@ -20,6 +20,12 @@ namespace octree_modeling {
 
         }
 
+        Octree::Octree (std::shared_ptr<OctreeNode> _root, glm::vec3 _center, float _width, std::size_t _depth) : center(_center), width(_width), depth(_depth) {
+
+            this->root = _root;
+
+        }
+
         glm::vec3 Octree::get_center () const {
 
             return this->center;
@@ -45,6 +51,12 @@ namespace octree_modeling {
         void Octree::set_width (float _width) {
 
             this->width = _width;
+
+        }
+
+        std::shared_ptr<OctreeNode> const& Octree::get_root () const {
+
+            return this->root;
 
         }
 
@@ -135,6 +147,13 @@ namespace octree_modeling {
         float Octree::volume () const {
 
             return this->root->compute_volume(this->width);
+
+        }
+
+        Octree Octree::union_octree (Octree const& octree) const {
+
+            std::shared_ptr<OctreeNode> new_root = this->root->union_node(*(octree.get_root()));
+            return Octree(new_root, this->center, this->depth);
 
         }
 

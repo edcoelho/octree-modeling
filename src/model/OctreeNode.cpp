@@ -1,18 +1,28 @@
 #include "model/OctreeNode.hpp"
 #include <cmath>
-// #include <iostream>
+#include <iostream>
 // #define GLM_ENABLE_EXPERIMENTAL
 // #include <glm/gtx/string_cast.hpp>
 
 namespace octree_modeling {
     namespace model {
 
-        // OctreeNode::OctreeNode (glm::vec3 center, float radius) : color(WHITE) {
+        OctreeNode::OctreeNode () {}
 
-        //     this->max = center + glm::vec3(radius);
-        //     this->min = center - glm::vec3(radius);
+        OctreeNode::OctreeNode (OctreeNode const& node) {
 
-        // }
+            this->color = node.get_color();
+            if (node.get_color() == GRAY) {
+
+                for (std::size_t i = 0; i < 8; i++) {
+
+                    this->octants[i] = std::make_shared<OctreeNode>(*(node.get_octants()[i]));
+
+                }
+
+            }
+
+        }
 
         OctreeNodeColor OctreeNode::get_color () const {
 
@@ -26,13 +36,25 @@ namespace octree_modeling {
 
         }
 
+        std::array<std::shared_ptr<OctreeNode>, 8>& OctreeNode::get_octants () {
+
+            return this->octants;
+
+        }
+
+        std::array<std::shared_ptr<OctreeNode>, 8> const& OctreeNode::get_octants () const {
+
+            return this->octants;
+
+        }
+
         void OctreeNode::subdivide () {
 
             for (std::size_t i = 0; i < 8; i++) this->octants[i] = std::make_shared<OctreeNode>();
 
         }
 
-        void OctreeNode::unify () {
+        void OctreeNode::unify_children () {
 
             if (this->octants[0] != nullptr) {
 
@@ -109,7 +131,7 @@ namespace octree_modeling {
 
             }
 
-            this->unify();
+            this->unify_children();
 
         }
 
@@ -219,6 +241,52 @@ namespace octree_modeling {
 
             }
 
+        }
+
+        std::shared_ptr<OctreeNode> OctreeNode::union_node (OctreeNode const& node) const {
+
+            std::shared_ptr<OctreeNode> new_node;
+
+            if (this->color == BLACK || node.get_color() == BLACK) {
+
+                new_node = std::make_shared<OctreeNode>();
+                new_node->set_color(BLACK);
+
+            } else if (this->color == node.get_color()) {
+
+                if (this->color == WHITE) {
+
+                    new_node = std::make_shared<OctreeNode>();
+                    new_node->set_color(WHITE);
+
+                } else {
+
+                    new_node = std::make_shared<OctreeNode>();
+                    new_node->set_color(GRAY);
+                    for (std::size_t i = 0; i < 8; i++) {
+
+                        new_node->get_octants()[i] = this->octants[i]->union_node(*(node.get_octants()[i]));
+
+                    }
+
+                }
+
+            } else {
+
+                if (this->color == GRAY) {
+
+                    new_node = std::make_shared<OctreeNode>(*this);
+
+                } else {
+
+                    new_node = std::make_shared<OctreeNode>(node);
+
+                }
+
+            }
+
+            new_node->unify_children();
+            return new_node;
         }
 
     }
