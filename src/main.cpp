@@ -16,6 +16,7 @@
 
 #include "model/Octree.hpp"
 #include "model/Sphere.hpp"
+#include "model/Block.hpp"
 
 using namespace octree_modeling;
 
@@ -52,7 +53,7 @@ int main(int argc, char * argv[]) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitContextFlags(GLUT_DEBUG);
 
-    render::Window window(800, 800, glm::vec4(0.0, 0.0, 0.0, 1.0), "Octree Modeling");
+    render::Window window(700, 700, glm::vec4(0.0, 0.0, 0.0, 1.0), "Octree Modeling");
 
     // Set GLUT callbacks.
     glutDisplayFunc(render::display);
@@ -102,19 +103,33 @@ int main(int argc, char * argv[]) {
 
     // Create a Vertex Buffer Object (VBO) for vertex position.
 
+    // From primitive
     // model::Octree octree(glm::vec3(0.0f), 4.4f, 4);
     // octree.build_from_primitive(model::Sphere(glm::vec3(0.0f), 2.2f));
     // vertices_pos = octree.leaves_vertices();
     // std::size_t quantity_of_cubes = vertices_pos.size()/3/8;
 
-    model::Octree octree1(glm::vec3(0.0f), 4.4f, 4);
-    octree1.build_from_primitive(model::Sphere(glm::vec3(-2.5f, 0.0f, 0.0), 2.2f));
-    model::Octree octree2(glm::vec3(0.0f), 4.4f, 4);
-    octree2.build_from_primitive(model::Sphere(glm::vec3(2.5f, 0.0f, 0.0), 2.2f));
+    // model::Octree octree(glm::vec3(0.0f), 4.4f, 4);
+    // octree.build_from_primitive(model::Block(glm::vec3(1.9f, 1.4f, 2.0f), glm::vec3(-1.0f)));
+    // vertices_pos = octree.leaves_vertices();
+    // std::size_t quantity_of_cubes = vertices_pos.size()/3/8;
 
-    model::Octree octree = octree1.union_octree(octree2);
-    vertices_pos = octree.leaves_vertices();
+    // From union
+    // model::Octree octree1(glm::vec3(0.0f), 4.4f, 4);
+    // octree1.build_from_primitive(model::Sphere(glm::vec3(-2.8f, 0.0f, 0.0), 2.2f));
+    // model::Octree octree2(glm::vec3(0.0f), 4.4f, 4);
+    // octree2.build_from_primitive(model::Sphere(glm::vec3(2.8f, 0.0f, 0.0), 2.2f));
+    // model::Octree octree = octree1.union_octree(octree2);
+    // vertices_pos = octree.leaves_vertices();
+    // std::size_t quantity_of_cubes = vertices_pos.size()/3/8;
+    // octree.write_to_file("octree_example");
+
+    // From file
+    model::Octree octree("octree_example", glm::vec3(0.0f), 2.2f);
+    vertices_pos = octree.leaves_vertices(false);
     std::size_t quantity_of_cubes = vertices_pos.size()/3/8;
+
+    std::cout << octree.string_octree() << std::endl;
 
     GLuint vbo_pos;
     glGenBuffers(1, &vbo_pos);
@@ -180,8 +195,6 @@ int main(int argc, char * argv[]) {
     quantity_of_indexes = indexes_vertices_pos.size();
     indexes_vertices_pos.clear();
     indexes_vertices_pos.shrink_to_fit();
-
-    std::cout << "Volume da octree: " << octree.volume() << std::endl;
 
     glutMainLoop();
 

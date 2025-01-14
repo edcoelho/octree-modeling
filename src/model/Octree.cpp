@@ -1,6 +1,10 @@
 #include "model/Octree.hpp"
 #include <stdexcept>
 #include <cmath>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 namespace octree_modeling {
     namespace model {
@@ -23,6 +27,14 @@ namespace octree_modeling {
         Octree::Octree (std::shared_ptr<OctreeNode> _root, glm::vec3 _center, float _width, std::size_t _depth) : center(_center), width(_width), depth(_depth) {
 
             this->root = _root;
+
+        }
+
+        Octree::Octree (std::string const& file_name, glm::vec3 _center, float _width) : center(_center), width(_width), depth(0) {
+
+            this->root = std::make_shared<OctreeNode>();
+            this->root->set_color(WHITE);
+            this->build_from_file(file_name);
 
         }
 
@@ -84,55 +96,75 @@ namespace octree_modeling {
 
         }
 
-        std::vector<float> Octree::leaves_vertices () const {
+        void Octree::build_from_string (std::string const& string) {
+
+            if (this->root->get_color() == WHITE) {
+
+
+                std::string df_string = string;
+                this->root->make_subtree_from_string(df_string, 0, this->depth);
+
+            } else {
+
+                throw std::runtime_error("Error: It is not possible to build an octree which is already builded.");
+
+            }
+
+        }
+
+        std::vector<float> Octree::leaves_vertices (bool global_cube) const {
 
             std::vector<float> vertices;
             if (this->root->get_color() != WHITE) {
 
                 vertices.reserve(8 + std::min(std::pow(8, this->depth), std::pow(10,6)));
 
-                // Adding octree root vertices.
-                glm::vec3 vertex;
+                if (global_cube) {
 
-                vertex = this->center + glm::vec3(-this->width/2.0f, -this->width/2.0f, this->width/2.0f);
-                vertices.push_back(vertex.x);
-                vertices.push_back(vertex.y);
-                vertices.push_back(vertex.z);
+                    // Adding octree root vertices.
+                    glm::vec3 vertex;
 
-                vertex = this->center + glm::vec3(this->width/2.0f, -this->width/2.0f, this->width/2.0f);
-                vertices.push_back(vertex.x);
-                vertices.push_back(vertex.y);
-                vertices.push_back(vertex.z);
+                    vertex = this->center + glm::vec3(-this->width/2.0f, -this->width/2.0f, this->width/2.0f);
+                    vertices.push_back(vertex.x);
+                    vertices.push_back(vertex.y);
+                    vertices.push_back(vertex.z);
 
-                vertex = this->center + glm::vec3(this->width/2.0f, this->width/2.0f, this->width/2.0f);
-                vertices.push_back(vertex.x);
-                vertices.push_back(vertex.y);
-                vertices.push_back(vertex.z);
+                    vertex = this->center + glm::vec3(this->width/2.0f, -this->width/2.0f, this->width/2.0f);
+                    vertices.push_back(vertex.x);
+                    vertices.push_back(vertex.y);
+                    vertices.push_back(vertex.z);
 
-                vertex = this->center + glm::vec3(-this->width/2.0f, this->width/2.0f, this->width/2.0f);
-                vertices.push_back(vertex.x);
-                vertices.push_back(vertex.y);
-                vertices.push_back(vertex.z);
+                    vertex = this->center + glm::vec3(this->width/2.0f, this->width/2.0f, this->width/2.0f);
+                    vertices.push_back(vertex.x);
+                    vertices.push_back(vertex.y);
+                    vertices.push_back(vertex.z);
 
-                vertex = this->center + glm::vec3(this->width/2.0f, -this->width/2.0f, -this->width/2.0f);
-                vertices.push_back(vertex.x);
-                vertices.push_back(vertex.y);
-                vertices.push_back(vertex.z);
+                    vertex = this->center + glm::vec3(-this->width/2.0f, this->width/2.0f, this->width/2.0f);
+                    vertices.push_back(vertex.x);
+                    vertices.push_back(vertex.y);
+                    vertices.push_back(vertex.z);
 
-                vertex = this->center + glm::vec3(-this->width/2.0f, -this->width/2.0f, -this->width/2.0f);
-                vertices.push_back(vertex.x);
-                vertices.push_back(vertex.y);
-                vertices.push_back(vertex.z);
+                    vertex = this->center + glm::vec3(this->width/2.0f, -this->width/2.0f, -this->width/2.0f);
+                    vertices.push_back(vertex.x);
+                    vertices.push_back(vertex.y);
+                    vertices.push_back(vertex.z);
 
-                vertex = this->center + glm::vec3(-this->width/2.0f, this->width/2.0f, -this->width/2.0f);
-                vertices.push_back(vertex.x);
-                vertices.push_back(vertex.y);
-                vertices.push_back(vertex.z);
+                    vertex = this->center + glm::vec3(-this->width/2.0f, -this->width/2.0f, -this->width/2.0f);
+                    vertices.push_back(vertex.x);
+                    vertices.push_back(vertex.y);
+                    vertices.push_back(vertex.z);
 
-                vertex = this->center + glm::vec3(this->width/2.0f, this->width/2.0f, -this->width/2.0f);
-                vertices.push_back(vertex.x);
-                vertices.push_back(vertex.y);
-                vertices.push_back(vertex.z);
+                    vertex = this->center + glm::vec3(-this->width/2.0f, this->width/2.0f, -this->width/2.0f);
+                    vertices.push_back(vertex.x);
+                    vertices.push_back(vertex.y);
+                    vertices.push_back(vertex.z);
+
+                    vertex = this->center + glm::vec3(this->width/2.0f, this->width/2.0f, -this->width/2.0f);
+                    vertices.push_back(vertex.x);
+                    vertices.push_back(vertex.y);
+                    vertices.push_back(vertex.z);
+
+                }
 
                 // Adding octree leaves vertices.
                 this->root->append_vertices(vertices, this->width, this->center);
@@ -154,6 +186,41 @@ namespace octree_modeling {
 
             std::shared_ptr<OctreeNode> new_root = this->root->union_node(*(octree.get_root()));
             return Octree(new_root, this->center, this->depth);
+
+        }
+
+        void Octree::write_to_file(const std::string& file_name) const {
+
+            std::ofstream file_stream(file_name);
+            
+            if (!file_stream) {
+
+                std::cerr << "Failed to open file: " << file_name << std::endl;
+                return;
+
+            }
+
+            file_stream << this->string_octree();
+
+            file_stream.close();
+
+        }
+
+        void Octree::build_from_file(const std::string& file_name) {
+
+            std::ifstream file_stream(file_name);
+            
+            if (!file_stream) {
+
+                std::cerr << "Failed to open file: " << file_name << std::endl;
+                return;
+
+            }
+
+            std::ostringstream buffer;
+            buffer << file_stream.rdbuf();
+
+            this->build_from_string(buffer.str());
 
         }
 

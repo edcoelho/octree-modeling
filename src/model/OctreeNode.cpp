@@ -1,6 +1,6 @@
 #include "model/OctreeNode.hpp"
 #include <cmath>
-#include <iostream>
+// #include <iostream>
 // #define GLM_ENABLE_EXPERIMENTAL
 // #include <glm/gtx/string_cast.hpp>
 
@@ -132,6 +132,33 @@ namespace octree_modeling {
             }
 
             this->unify_children();
+
+        }
+
+        void OctreeNode::make_subtree_from_string (std::string& df_string, const std::size_t depth, std::size_t& global_depth) {
+
+            if (!df_string.empty()) {
+
+                if (depth > global_depth) global_depth = depth;
+
+                const char first_char = df_string[0];
+
+                if (first_char == 'B') this->color = BLACK;
+                else if (first_char == 'W') this->color = WHITE;
+                else {
+
+                    this->color = GRAY;
+                    this->subdivide();
+                    for (std::size_t i = 0; i < 8; i++) {
+
+                        df_string = df_string.substr(1, df_string.size()-1);
+                        this->octants[i]->make_subtree_from_string(df_string, depth+1, global_depth);
+
+                    }
+
+                }
+
+            }
 
         }
 
